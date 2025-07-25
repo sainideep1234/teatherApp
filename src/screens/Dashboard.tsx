@@ -12,31 +12,34 @@ import Header from '../components/Header';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import { useActiveCode } from '../context/activeCode';
+import { useRelationship } from '../context/relationship';
+import { useNavigation } from '@react-navigation/native';
 
-interface TetherCode {
+export interface TetherCode {
   code: string;
   createdAt: number;
   expiresAt: number;
   userId: string;
   userName: string;
 }
-interface Relationship {
+export interface Relationship {
   partnerId: string;
   partnerName: string;
   startDate: number;
 }
 
-const CURRENT_USER = {
+export const CURRENT_USER = {
   id: 'user_123',
   name: 'Alex Chen',
 };
 
 function Dashboard() {
-  const [activeCode, setActiveCode] = useState<TetherCode | null>(null);
+  const { activeCode, setActiveCode } = useActiveCode();
   const [enteredCode, setEnteredCode] = useState('');
-  const [relationship, setRelationship] = useState<Relationship | null>(null);
+  const { relationship, setRelationship } = useRelationship();
   const [timeRemaining, setTimeRemaining] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const navigation = useNavigation<any>();
 
   useEffect(() => {
     const loadData = async () => {
@@ -156,29 +159,28 @@ function Dashboard() {
     await AsyncStorage.removeItem(`tether_code_${CURRENT_USER.id}`);
     setActiveCode(null);
     setEnteredCode('');
+    navigation.navigate('Connection');
 
     Alert.alert(`You're now connected with ${partnerName}!`);
   };
 
-  const breakUp = async () => {
-    if (!relationship) return;
+  // const breakUp = async () => {
+  //   if (!relationship) return;
 
-    await AsyncStorage.removeItem(`tether_relationship_${CURRENT_USER.id}`);
-    await AsyncStorage.removeItem(
-      `tether_relationship_${relationship.partnerId}`,
-    );
-    setRelationship(null);
+  //   await AsyncStorage.removeItem(`tether_relationship_${CURRENT_USER.id}`);
+  //   await AsyncStorage.removeItem(`tether_relationship_${relationship.partnerId}`);
+  //   setRelationship(null);
 
-    Alert.alert('Connection ended.');
-  };
+  //   Alert.alert('Connection ended.');
+  // };
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
+  // const formatDate = (timestamp: number) => {
+  //   return new Date(timestamp).toLocaleDateString('en-US', {
+  //     year: 'numeric',
+  //     month: 'long',
+  //     day: 'numeric',
+  //   });
+  // };
 
   return (
     <>
@@ -186,12 +188,12 @@ function Dashboard() {
         <ScrollView>
           <KeyboardAvoidingView>
             <Header />
-            <Card
-              onPress={generateCode}
-              activeCode={activeCode}
-              timeRemaining={timeRemaining}
+            <Card genrateCode={generateCode} timeRemaining={timeRemaining} />
+            <CardTwo
+              setEnteredCode={setEnteredCode}
+              enteredCode={enteredCode}
+              enterCodeFn={enterCode}
             />
-            <CardTwo onTextChange={setEnteredCode} value={enteredCode} />
             <CardThree />
           </KeyboardAvoidingView>
         </ScrollView>

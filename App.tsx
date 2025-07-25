@@ -5,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Connection from './src/screens/Connection';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ActiveCodeProvider } from './src/context/activeCode';
+import { RelationshipProvider } from './src/context/relationship';
 
 const Stack = createStackNavigator();
 
@@ -29,7 +31,11 @@ const App = () => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <MyStack />
+        <ActiveCodeProvider>
+          <RelationshipProvider>
+            <MyStack />
+          </RelationshipProvider>
+        </ActiveCodeProvider>
       </NavigationContainer>
     </SafeAreaProvider>
   );

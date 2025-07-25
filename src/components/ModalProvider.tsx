@@ -1,17 +1,22 @@
 import React from 'react';
 import { Alert, Modal, StyleSheet, View, Text, Pressable } from 'react-native';
+import { useRelationship } from '../context/relationship';
+import { useNavigation } from '@react-navigation/native';
 
 const ModalProvider = ({
   children,
   modalVisible,
-  setModalVisible, // <-- add this to control the modal from parent
+  setModalVisible,
+  breakUp,
 }: {
   children: React.ReactNode;
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
+  breakUp: () => void;
 }) => {
+  const { relationship } = useRelationship();
+  const navigation = useNavigation<any>();
 
-  
   return (
     <View style={{ flex: 1 }}>
       {children}
@@ -29,9 +34,9 @@ const ModalProvider = ({
           <View style={styles.container}>
             <Text style={styles.title}>End Connection</Text>
             <Text style={styles.paragraph}>
-              Are you sure you want to end your connection with Taylor Swift?
-              Both parties will be notified and you'll both be able to generate
-              new codes.
+              Are you sure you want to end your connection with{' '}
+              {relationship?.partnerName}? Both parties will be notified and
+              you'll both be able to generate new codes.
             </Text>
             <View style={styles.btnContainer}>
               <Pressable
@@ -40,7 +45,14 @@ const ModalProvider = ({
               >
                 <Text style={styles.btn1text}>Cancel</Text>
               </Pressable>
-              <Pressable style={styles.btn2Container}>
+              <Pressable
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  breakUp();
+                  navigation.navigate('Dashboard');
+                }}
+                style={styles.btn2Container}
+              >
                 <Text style={styles.btn2text}>End Connection</Text>
               </Pressable>
             </View>

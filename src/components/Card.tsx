@@ -4,23 +4,36 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import Copy from 'react-native-vector-icons/Ionicons';
 import Check from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import { useActiveCode } from '../context/activeCode';
 
-const Card = ({onPress , activeCode , timeRemaining}:{onPress:()=>void , activeCode:any , timeRemaining:string}) => {
-  const [isCopied, setIsCopied] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-  const [isCode, setIsCode] = useState(false);
-
+const Card = ({
+  genrateCode,
+  timeRemaining,
+}: {
+  genrateCode: () => void;
+  timeRemaining: string;
+}) => {
+  const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [isCode, setIsCode] = useState<boolean>(false);
+  const { activeCode } = useActiveCode();
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.iconContainer}>
-        <Icon name="heart" size={40} color="white" />
+      <View>
+        <LinearGradient
+          colors={['#8A2BE2', '#BA55D3']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.iconContainer}
+        >
+          <Icon name="heart" size={40} color="white" />
+        </LinearGradient>
       </View>
 
       <Text style={styles.title}>Generate Your Code</Text>
       <Text style={styles.subtitle}>
         Create a Unique Code for someone special
       </Text>
-      {isCode && (
+      {isCode && activeCode && (
         <View style={styles.copyCodeContainer}>
           <View style={styles.copyCode}>
             <Text style={styles.code}>{activeCode.code}</Text>
@@ -41,9 +54,13 @@ const Card = ({onPress , activeCode , timeRemaining}:{onPress:()=>void , activeC
         </View>
       )}
 
-      <Pressable style={styles.gradientWrapper} onPress={() => {
-        onPress();
-        setIsCode(true)}}>
+      <Pressable
+        style={styles.gradientWrapper}
+        onPress={() => {
+          setIsCode(true);
+          genrateCode();
+        }}
+      >
         <LinearGradient
           colors={['#8A2BE2', '#BA55D3']}
           start={{ x: 0, y: 0 }}

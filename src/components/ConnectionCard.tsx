@@ -2,12 +2,22 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Cross from 'react-native-vector-icons/Entypo';
+import { useRelationship } from '../context/relationship';
 
 const ConnectionCard = ({
   setModalVisible,
 }: {
   setModalVisible: (e: any) => void;
 }) => {
+  const { relationship } = useRelationship();
+
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
@@ -16,7 +26,8 @@ const ConnectionCard = ({
       <Text style={styles.title}>In a Relationship</Text>
       <Text style={styles.subtitle}>
         You're in a relationship with{' '}
-        <Text style={styles.name}>Ariana Grande </Text>since July 23, 2025.
+        <Text style={styles.name}>{relationship?.partnerName} </Text>since{' '}
+          {formatDate(relationship?.startDate || 0)}
       </Text>
 
       <Pressable style={styles.badge} onPress={() => setModalVisible(true)}>

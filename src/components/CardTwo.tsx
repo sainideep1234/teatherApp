@@ -2,16 +2,17 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+
 
 const CardTwo = ({
-  onTextChange,
-  value,
+  setEnteredCode,
+  enteredCode,
+  enterCodeFn,
 }: {
-  onTextChange: (text: string) => void;
-  value: string;
+  setEnteredCode: (text: string) => void;
+  enteredCode: string;
+  enterCodeFn: () => void;
 }) => {
-  const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
@@ -23,14 +24,16 @@ const CardTwo = ({
       </Text>
       <TextInput
         style={styles.inputBox}
-        value={value}
-        onChangeText={text => onTextChange(text.toUpperCase())}
+        value={enteredCode}
+        onChangeText={text => setEnteredCode(text.toUpperCase())}
         maxLength={8}
         placeholder="Enter 8-digit code"
       />
       <Pressable
         style={styles.gradientWrapper}
-        onPress={() => navigation.navigate('Connection')}
+        onPress={() => {
+          enterCodeFn();
+        }}
       >
         <LinearGradient
           colors={['#8A2BE2', '#BA55D3']} // Gradient colors from the screenshot

@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import Heart from 'react-native-vector-icons/AntDesign';
+import { useRelationship } from '../context/relationship';
 
 const CardThree = () => {
+  const { relationship } = useRelationship();
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer}>
@@ -39,9 +41,9 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: 'grey',
   },
-  headingContainer:{
-    flexDirection:'row',
-    gap:8,
-    alignItems:'center'
-  }
+    headingContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
 });

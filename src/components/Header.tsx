@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <SafeAreaView edges={['top']}>
       <View style={styles.container}>
-        <Pressable
+        <Pressable    
           onPress={() => {
             navigation.navigate('Dashboard');
           }}
