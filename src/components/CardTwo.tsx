@@ -1,18 +1,78 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import React from 'react';
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import React, { useState } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useRelationship } from '../context/relationship';
+import { useActiveCode } from '../context/activeCode';
+import { CURRENT_USER, Relationship } from '../screens/Dashboard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
-
-const CardTwo = ({
-  setEnteredCode,
-  enteredCode,
-  enterCodeFn,
-}: {
-  setEnteredCode: (text: string) => void;
-  enteredCode: string;
-  enterCodeFn: () => void;
+const CardTwo = ({}: // setEnteredCode,
+// enteredCode,
+// enterCodeFn,
+{
+  // setEnteredCode: (text: string) => void;
+  // enteredCode: string;
+  // enterCodeFn: () => void;
 }) => {
+  const [enteredCode, setEnteredCode] = useState('');
+  const { relationship, setRelationship } = useRelationship();
+  const { activeCode, setActiveCode } = useActiveCode();
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
+
+  const navigation = useNavigation<any>();
+
+  const enterCode = async () => {
+    if (relationship) {
+      Alert.alert("You're already in a relationship!");
+      return;
+    }
+
+    if (!enteredCode || enteredCode.length !== 8) {
+      Alert.alert('Please enter a valid 8-digit code');
+      return;
+    }
+    setIsConnecting(true);
+    await new Promise(res => setTimeout(res, 1000));
+
+    if (enteredCode === '00000000') {
+      Alert.alert('Sorry, this person is already in a relationship.');
+      return;
+    }
+
+    const partnerNames = ['Taylor', 'Emma', 'Ryan', 'Zendaya'];
+    const partnerName =
+      partnerNames[Math.floor(Math.random() * partnerNames.length)];
+    const partnerId = `demo_user_${Date.now()}`;
+
+    const newRel: Relationship = {
+      partnerId,
+      partnerName,
+      startDate: Date.now(),
+    };
+
+    setRelationship(newRel);
+    setIsConnecting(false);
+    await AsyncStorage.setItem(
+      `tether_relationship_${CURRENT_USER.id}`,
+      JSON.stringify(newRel),
+    );
+    await AsyncStorage.removeItem(`tether_code_${CURRENT_USER.id}`);
+    setActiveCode(null);
+    setEnteredCode('');
+    navigation.navigate('Connection');
+
+    Alert.alert(`You're now connected with ${partnerName}!`);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
@@ -32,7 +92,7 @@ const CardTwo = ({
       <Pressable
         style={styles.gradientWrapper}
         onPress={() => {
-          enterCodeFn();
+          enterCode();
         }}
       >
         <LinearGradient
@@ -41,7 +101,7 @@ const CardTwo = ({
           end={{ x: 1, y: 0 }}
           style={styles.gradientButton}
         >
-          <Text style={styles.buttonText}>Enter Code</Text>
+          <Text style={styles.buttonText}>{isConnecting?"Connecting...":"Enter Code"}</Text>
         </LinearGradient>
       </Pressable>
     </View>

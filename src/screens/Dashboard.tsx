@@ -36,9 +36,11 @@ export const CURRENT_USER = {
 
 function Dashboard() {
   const { activeCode, setActiveCode } = useActiveCode();
-  const [enteredCode, setEnteredCode] = useState('');
+  
   const { relationship, setRelationship } = useRelationship();
   const [timeRemaining, setTimeRemaining] = useState('');
+  const [isGenrating, setIsGenrating] = useState<boolean>(false);
+  // const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const navigation = useNavigation<any>();
 
   useEffect(() => {
@@ -96,6 +98,8 @@ function Dashboard() {
       Alert.alert("You're already in a relationship!");
       return;
     }
+    setIsGenrating(true);
+    await new Promise(res => setTimeout(res, 1000)); // 1 second delay
 
     const code = Math.random().toString(36).substring(2, 10).toUpperCase();
     const now = Date.now();
@@ -119,50 +123,52 @@ function Dashboard() {
       JSON.stringify(newCode),
     );
 
+    setIsGenrating(false);
     Alert.alert('Tether code generated!');
   };
 
-  const enterCode = async () => {
-    if (relationship) {
-      Alert.alert("You're already in a relationship!");
-      return;
-    }
+  // const enterCode = async () => {
+  //   if (relationship) {
+  //     Alert.alert("You're already in a relationship!");
+  //     return;
+  //   }
 
-    if (!enteredCode || enteredCode.length !== 8) {
-      Alert.alert('Please enter a valid 8-digit code');
-      return;
-    }
+  //   if (!enteredCode || enteredCode.length !== 8) {
+  //     Alert.alert('Please enter a valid 8-digit code');
+  //     return;
+  //   }
+  //   setIsConnecting(true);
+  //   await new Promise(res => setTimeout(res, 1000));
 
-    await new Promise(res => setTimeout(res, 1000));
+  //   if (enteredCode === '00000000') {
+  //     Alert.alert('Sorry, this person is already in a relationship.');
+  //     return;
+  //   }
 
-    if (enteredCode === '00000000') {
-      Alert.alert('Sorry, this person is already in a relationship.');
-      return;
-    }
+  //   const partnerNames = ['Taylor', 'Emma', 'Ryan', 'Zendaya'];
+  //   const partnerName =
+  //     partnerNames[Math.floor(Math.random() * partnerNames.length)];
+  //   const partnerId = `demo_user_${Date.now()}`;
 
-    const partnerNames = ['Taylor', 'Emma', 'Ryan', 'Zendaya'];
-    const partnerName =
-      partnerNames[Math.floor(Math.random() * partnerNames.length)];
-    const partnerId = `demo_user_${Date.now()}`;
+  //   const newRel: Relationship = {
+  //     partnerId,
+  //     partnerName,
+  //     startDate: Date.now(),
+  //   };
 
-    const newRel: Relationship = {
-      partnerId,
-      partnerName,
-      startDate: Date.now(),
-    };
+  //   setRelationship(newRel);
+  //   setIsConnecting(false);
+  //   await AsyncStorage.setItem(
+  //     `tether_relationship_${CURRENT_USER.id}`,
+  //     JSON.stringify(newRel),
+  //   );
+  //   await AsyncStorage.removeItem(`tether_code_${CURRENT_USER.id}`);
+  //   setActiveCode(null);
+  //   setEnteredCode('');
+  //   navigation.navigate('Connection');
 
-    setRelationship(newRel);
-    await AsyncStorage.setItem(
-      `tether_relationship_${CURRENT_USER.id}`,
-      JSON.stringify(newRel),
-    );
-    await AsyncStorage.removeItem(`tether_code_${CURRENT_USER.id}`);
-    setActiveCode(null);
-    setEnteredCode('');
-    navigation.navigate('Connection');
-
-    Alert.alert(`You're now connected with ${partnerName}!`);
-  };
+  //   Alert.alert(`You're now connected with ${partnerName}!`);
+  // };
 
   // const breakUp = async () => {
   //   if (!relationship) return;
@@ -188,11 +194,18 @@ function Dashboard() {
         <ScrollView>
           <KeyboardAvoidingView>
             <Header />
-            <Card genrateCode={generateCode} timeRemaining={timeRemaining} />
+            <Card
+              isGenrating={isGenrating}
+              setIsGenrating={setIsGenrating}
+              genrateCode={generateCode}
+              timeRemaining={timeRemaining}
+            />
             <CardTwo
-              setEnteredCode={setEnteredCode}
-              enteredCode={enteredCode}
-              enterCodeFn={enterCode}
+              // setEnteredCode={setEnteredCode}
+              // enteredCode={enteredCode}
+              // enterCodeFn={enterCode}
+              // isConnecting={isConnecting}
+              // setIsConnecting={setIsConnecting}
             />
             <CardThree />
           </KeyboardAvoidingView>

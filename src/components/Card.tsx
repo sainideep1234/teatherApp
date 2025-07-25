@@ -9,13 +9,19 @@ import { useActiveCode } from '../context/activeCode';
 const Card = ({
   genrateCode,
   timeRemaining,
+  setIsGenrating,
+  isGenrating,
 }: {
   genrateCode: () => void;
   timeRemaining: string;
+  setIsGenrating: (e: any) => void;
+  isGenrating: boolean;
 }) => {
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [isCode, setIsCode] = useState<boolean>(false);
   const { activeCode } = useActiveCode();
+
+  
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -67,7 +73,9 @@ const Card = ({
           end={{ x: 1, y: 0 }}
           style={styles.gradientButton}
         >
-          <Text style={styles.buttonText}>Generate Code</Text>
+          <Text style={styles.buttonText}>
+            {isGenrating ? 'Genrating...' : 'Genrate Code'}
+          </Text>
         </LinearGradient>
       </Pressable>
     </SafeAreaView>
