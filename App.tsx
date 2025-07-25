@@ -1,4 +1,3 @@
-import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import Dashboard from './src/screens/Dashboard';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -42,5 +41,3 @@ const App = () => {
 };
 
 export default App;
-
-const styles = StyleSheet.create({});

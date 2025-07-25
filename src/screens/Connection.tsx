@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Pressable, Alert } from 'react-native';
+import { StyleSheet,  View, SafeAreaView,  Alert } from 'react-native';
 import { useActiveCode } from '../context/activeCode';
 
 import CardThree from '../components/CardThree';
@@ -13,7 +13,7 @@ import { CURRENT_USER } from './Dashboard';
 const Connection = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const {relationship , setRelationship} = useRelationship();
-  const { activeCode, setActiveCode } = useActiveCode();
+  const {  setActiveCode } = useActiveCode();
   const breakUp = async () => {
     if (!relationship) return;
 

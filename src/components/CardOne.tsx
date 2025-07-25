@@ -9,12 +9,10 @@ import { useActiveCode } from '../context/activeCode';
 const Card = ({
   genrateCode,
   timeRemaining,
-  setIsGenrating,
   isGenrating,
 }: {
   genrateCode: () => void;
   timeRemaining: string;
-  setIsGenrating: (e: any) => void;
   isGenrating: boolean;
 }) => {
   const [isCopied, setIsCopied] = useState<boolean>(false);

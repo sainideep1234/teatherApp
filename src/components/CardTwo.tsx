@@ -15,17 +15,10 @@ import { CURRENT_USER, Relationship } from '../screens/Dashboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
-const CardTwo = ({}: // setEnteredCode,
-// enteredCode,
-// enterCodeFn,
-{
-  // setEnteredCode: (text: string) => void;
-  // enteredCode: string;
-  // enterCodeFn: () => void;
-}) => {
+const CardTwo = () => {
   const [enteredCode, setEnteredCode] = useState('');
   const { relationship, setRelationship } = useRelationship();
-  const { activeCode, setActiveCode } = useActiveCode();
+  const {  setActiveCode } = useActiveCode();
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
 
   const navigation = useNavigation<any>();
@@ -101,7 +94,9 @@ const CardTwo = ({}: // setEnteredCode,
           end={{ x: 1, y: 0 }}
           style={styles.gradientButton}
         >
-          <Text style={styles.buttonText}>{isConnecting?"Connecting...":"Enter Code"}</Text>
+          <Text style={styles.buttonText}>
+            {isConnecting ? 'Connecting...' : 'Enter Code'}
+          </Text>
         </LinearGradient>
       </Pressable>
     </View>

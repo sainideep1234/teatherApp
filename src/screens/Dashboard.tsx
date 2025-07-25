@@ -1,11 +1,5 @@
-import {
-  ScrollView,
-  StyleSheet,
-  SafeAreaView,
-  useColorScheme,
-  KeyboardAvoidingView,
-} from 'react-native';
-import Card from '../components/Card';
+import { ScrollView, SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import Card from '../components/CardOne';
 import CardTwo from '../components/CardTwo';
 import CardThree from '../components/CardThree';
 import Header from '../components/Header';
@@ -14,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import { useActiveCode } from '../context/activeCode';
 import { useRelationship } from '../context/relationship';
-import { useNavigation } from '@react-navigation/native';
 
 export interface TetherCode {
   code: string;
@@ -36,15 +29,20 @@ export const CURRENT_USER = {
 
 function Dashboard() {
   const { activeCode, setActiveCode } = useActiveCode();
-  
+
   const { relationship, setRelationship } = useRelationship();
   const [timeRemaining, setTimeRemaining] = useState('');
   const [isGenrating, setIsGenrating] = useState<boolean>(false);
-  // const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const navigation = useNavigation<any>();
 
   useEffect(() => {
     const loadData = async () => {
+      if (relationship) {
+        await AsyncStorage.removeItem(`tether_relationship_${CURRENT_USER.id}`);
+        await AsyncStorage.removeItem(
+          `tether_relationship_${relationship.partnerId}`,
+        );
+      }
+
       const savedCode = await AsyncStorage.getItem(
         `tether_code_${CURRENT_USER.id}`,
       );
@@ -196,17 +194,10 @@ function Dashboard() {
             <Header />
             <Card
               isGenrating={isGenrating}
-              setIsGenrating={setIsGenrating}
               genrateCode={generateCode}
               timeRemaining={timeRemaining}
             />
-            <CardTwo
-              // setEnteredCode={setEnteredCode}
-              // enteredCode={enteredCode}
-              // enterCodeFn={enterCode}
-              // isConnecting={isConnecting}
-              // setIsConnecting={setIsConnecting}
-            />
+            <CardTwo />
             <CardThree />
           </KeyboardAvoidingView>
         </ScrollView>
@@ -214,11 +205,5 @@ function Dashboard() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default Dashboard;
